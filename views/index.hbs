@@ -1,0 +1,10 @@
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+
+{{#form "/books/upload" class="form" enctype="multipart/form-data"}}
+    {{label "name" "Please select file name"}}
+    {{file "file"}}
+    {{submit "save" "Submit form"}}
+
+{{/form}}
+
