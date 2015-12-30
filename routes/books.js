@@ -44,13 +44,15 @@ router.post('/upload', upload.any(),function (req, res, next) {
             }
         }
     }, function (error, response) {
-        if (error)
+        if (error){
             console.log(error);
-        if (response)
+            res.status(500).send(error);
+        }
+        if (response){
             console.log(response);
+            res.status(200).send(response);
+        }
     });
-
-    res.sendStatus(200);
 });
 
 
