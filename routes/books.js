@@ -4,8 +4,8 @@ var router = express.Router();
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    host: 'localhost:9200',
-    log: ['error', 'trace']
+    host: 'localhost:9200'
+    //log: ['error', 'trace']
 });
 
 var storage = multer.diskStorage({
@@ -30,19 +30,24 @@ router.post('/upload', upload.any(),function (req, res, next) {
     var encoded = base64_encode(current.path);
     console.log(encoded.length);
 
-    client.create({
+    client.index({
         index: 'bookindex',
         id: current.originalname,
         type: 'book',
         body: {
             title: current.originalname,
+            path: current.path,
             file :  {
+                _name: current.filename,
+                _content_length: current.size,
                 _content: encoded
             }
         }
     }, function (error, response) {
-        console.log(error);
-        console.log(response);
+        if (error)
+            console.log(error);
+        if (response)
+            console.log(response);
     });
 
     res.sendStatus(200);
