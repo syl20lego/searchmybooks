@@ -26,17 +26,27 @@
 
 
     <script src="/javascripts/libs/angular-file-upload.min.js"></script>
-
+    <script src='/javascripts/libs/ng-infinite-scroll.min.js'></script>
 
     <script src="/javascripts/core.js"></script>
 
 </head>
 <!-- apply the module and controller to our body so angular is applied to that -->
-<body ng-app="books" ng-controller="mainController"
-      nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+<body ng-app="books" >
+<nav class="navbar">
+    <ul class="nav nav-tabs">
+        <li><a is-active-nav href="/#/">Home</a></li>
+        <li><a is-active-nav href="/#/search">Search</a></li>
+        <li><a is-active-nav href="/#/upload">Upload</a></li>
+        <li><a is-active-nav href="/#/admin">Admin</a></li>
+    </ul>
+</nav>
 <div class="container">
+
     <!-- MAIN CONTENT AND INJECTED VIEWS -->
     <div id="main">
+
+
         <!-- angular templating -->
         <!-- this is where content will be injected -->
         <div ng-view></div>
