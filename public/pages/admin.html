@@ -1,5 +1,6 @@
 <p>Status: <span class="badge" style="color:{{cluster.status}};">{{cluster.status}}</span></p>
 <p>Documents: {{cluster.indices.docs.count}}</p>
+<p>Index count : {{cluster.indices.count}}</p>
 <p>Index size : {{(cluster.indices.store.size_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
 <p>File system size: {{(cluster.nodes.fs.total_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
 <p>File system free: {{(cluster.nodes.fs.free_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
