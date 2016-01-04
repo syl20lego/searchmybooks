@@ -10,6 +10,22 @@ var client = new elasticsearch.Client({
 
 /* GET setting */
 router.get('/', function (req, res, next) {
+    client.cluster.stats({}, function (error, response) {
+        if (error) {
+            console.log(error);
+            if (error.statusCode === 404) {
+                res.status(204).send();
+            } else {
+                res.status(500).send(error);
+            }
+        } else if (response) {
+            console.log(response);
+            res.status(200).send(response);
+        }
+    });
+});
+
+router.get('/mapping', function (req, res, next) {
     client.indices.getMapping({
         index: 'bookindex'
     }, function (error, response) {

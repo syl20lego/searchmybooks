@@ -155,16 +155,38 @@
         console.info('uploader', uploader);
     }]);
 
-    app.controller('adminController', function($scope, $http){
+    app.controller('adminController', function($scope, $window, $http){
         //when landing on the page, get information
         $http.get('/admin/')
             .success(function (data) {
-                $scope.data = data;
+                $scope.cluster = data;
                 console.log('data: ' + JSON.stringify(data));
             })
             .error(function (data) {
                 console.log('Error: ' + data);
             });
 
+        $scope.deleteAll = function() {
+            var answer = $window.confirm('Are you sure this will destroy everything!');
+            if (answer){
+                $http.get('/admin/delete')
+                    .success(function (data) {
+                        console.log('Deleted : ' + JSON.stringify(data));
+                    })
+                    .error(function (data) {
+                        console.log('Error: ' + data);
+                    });
+            }
+        };
+
+        $scope.createIndexMapping = function() {
+            $http.get('/admin/create')
+                .success(function (data) {
+                    console.log('Created : ' + JSON.stringify(data));
+                })
+                .error(function (data) {
+                    console.log('Error: ' + data);
+                });
+        };
     });
 })();

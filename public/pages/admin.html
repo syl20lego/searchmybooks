@@ -1,0 +1,14 @@
+<p>Status: <span class="badge" style="color:{{cluster.status}};">{{cluster.status}}</span></p>
+<p>Documents: {{cluster.indices.docs.count}}</p>
+<p>Index size : {{(cluster.indices.store.size_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
+<p>File system size: {{(cluster.nodes.fs.total_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
+<p>File system free: {{(cluster.nodes.fs.free_in_bytes/(1024*1024*1024)).toFixed(2)}} Gb</p>
+
+<p>Heap used: {{(cluster.nodes.jvm.mem.heap_used_in_bytes/(1024*1024)).toFixed(2)}} Mb</p>
+<p>Heap free: {{((cluster.nodes.jvm.mem.heap_max_in_bytes - cluster.nodes.jvm.mem.heap_used_in_bytes)/(1024*1024)).toFixed(2)}} Mb</p>
+
+<div class="btn-group-vertical" role="group" >
+    <button type="button" class="btn btn-danger" ng-click="deleteAll()"><span class="glyphicon glyphicon-exclamation-sign"></span> Delete all indexes</button>
+    <button type="button" class="btn btn-warning" ng-click="createIndexMapping()"><span class="glyphicon glyphicon-equalizer"></span> Create index and mapping</button>
+
+</div>
