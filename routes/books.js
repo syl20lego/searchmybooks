@@ -19,8 +19,66 @@ var upload = multer({ storage: storage })
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+    client.search({
+        index: 'bookindex',
+        from: 0,
+        size: 10,
+        sort: "file.date:desc",
+        body: {
+            "fields": [
+            "title",
+            "path",
+            "file.author",
+            "file.name",
+            "file.content_type",
+            "file.content_length",
+            "file.date",
+            "file.keywords"
+            ]
+        }
+    }, function (error, response) {
+        if (error){
+            console.log(error);
+            res.status(500).send(error);
+        }else if (response){
+            console.log(response);
+            res.status(200).send(response);
+        }
+    });
+
 });
+
+/* GET users listing. */
+router.get('/search', function(req, res, next) {
+    client.search({
+        index: 'bookindex',
+        from: req.query.index > 0 ? req.query.index: 0,
+        size: 50,
+        sort: "file.date:desc",
+        body: {
+            "fields": [
+                "title",
+                "path",
+                "file.author",
+                "file.name",
+                "file.content_type",
+                "file.content_length",
+                "file.date",
+                "file.keywords"
+            ]
+        }
+    }, function (error, response) {
+        if (error){
+            console.log(error);
+            res.status(500).send(error);
+        }else if (response){
+            console.log(response);
+            res.status(200).send(response);
+        }
+    });
+
+});
+
 
 router.post('/upload', upload.any(),function (req, res, next) {
     // req.file is the `avatar` file
@@ -47,8 +105,7 @@ router.post('/upload', upload.any(),function (req, res, next) {
         if (error){
             console.log(error);
             res.status(500).send(error);
-        }
-        if (response){
+        }else if (response){
             console.log(response);
             res.status(200).send(response);
         }

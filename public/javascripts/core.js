@@ -13,7 +13,7 @@
             // route for the home page
             .when('/', {
                 templateUrl : 'pages/default.html',
-                controller  : 'searchController'
+                controller  : 'defaultController'
             })
             .when('/search', {
                 templateUrl : 'pages/search.html',
@@ -48,20 +48,46 @@
         };
     }]);
 
-    app.controller('searchController', function($scope, $http) {
-        $scope.formData = {};
+    app.controller('searchController', function($scope, SearchBook) {
+        $scope.searchBook = new SearchBook();
+    });
 
-        $scope.pagingFunction = function() {
-            console.log('Paging');
-            $http.get('/books/')
-                .success(function (data) {
-                    $scope.data = data;
-                    console.log('reloaded : ' + $scope.data);
-                })
-                .error(function (data) {
-                    console.log('Error: ' + data);
-                });
+    // SearchBook constructor function to encapsulate HTTP and pagination logic
+    app.factory('SearchBook', function($http) {
+        var constructor = function() {
+            this.items = [];
+            this.busy = false;
         };
+
+        constructor.prototype.nextPage = function() {
+            if (this.busy) return;
+            this.busy = true;
+            console.log('Paging');
+            var url = "/books/search?index=" + this.items.length;
+            $http.get(url).success(function(data) {
+                var items = data.hits.hits;
+                for (var i = 0; i < items.length; i++) {
+                    console.log(JSON.stringify(items[i]));
+                    this.items.push(items[i]);
+                }
+                this.busy = false;
+            }.bind(this));
+        };
+
+        return constructor;
+    });
+
+    app.controller('defaultController', function($scope, $http) {
+
+        $http.get('/books/')
+            .success(function (data) {
+                $scope.items = data.hits.hits;
+                console.log('reloaded : ' + data.hits.total);
+                console.log(JSON.stringify(data.hits.hits));
+            })
+            .error(function (data) {
+                console.log('Error: ' + data);
+            });
     });
 
     app.controller('uploadController', ['$scope', 'FileUploader', function($scope, FileUploader) {
@@ -74,7 +100,7 @@
         uploader.filters.push({
             name: 'maxQueue',
             fn: function(item /*{File|FileLikeObject}*/, options) {
-                return this.queue.length < 2;
+                return this.queue.length < 100;
             }
         });
         uploader.filters.push({
@@ -129,7 +155,16 @@
         console.info('uploader', uploader);
     }]);
 
-    app.controller('adminController', function(){
+    app.controller('adminController', function($scope, $http){
+        //when landing on the page, get information
+        $http.get('/admin/')
+            .success(function (data) {
+                $scope.data = data;
+                console.log('data: ' + JSON.stringify(data));
+            })
+            .error(function (data) {
+                console.log('Error: ' + data);
+            });
 
     });
 })();

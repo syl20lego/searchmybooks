@@ -1,0 +1,12 @@
+
+<div infinite-scroll='searchBook.nextPage()' infinite-scroll-disabled='searchBook.busy' infinite-scroll-distance='5' >
+    <div ng-repeat='item in searchBook.items track by $index'>
+        <!--Item number {{$index}}: {{item.fields.title}}-->
+        <span class='title'>
+        <a ng-href='/download/{{item.fields["file.name"][0]}}' target='_blank'>{{item.fields.title[0]}}</a>
+        </span>
+
+        <div style='clear: both;'></div>
+    </div>
+    <div ng-show='searchBook.busy'>Loading data...</div>
+</div>
