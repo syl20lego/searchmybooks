@@ -117,7 +117,7 @@
         uploader.filters.push({
             name: 'maxQueue',
             fn: function(item /*{File|FileLikeObject}*/, options) {
-                return this.queue.length < 100;
+                return this.queue.length < 1000;
             }
         });
         uploader.filters.push({
