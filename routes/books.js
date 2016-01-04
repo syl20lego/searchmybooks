@@ -4,8 +4,8 @@ var router = express.Router();
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    host: 'localhost:9200'
-    //log: ['error', 'trace']
+    host: 'localhost:9200',
+    log: ['error', 'trace']
 });
 
 var storage = multer.diskStorage({
@@ -50,14 +50,15 @@ router.get('/', function(req, res, next) {
 
 /* GET users listing. */
 router.get('/search', function(req, res, next) {
+    var terms = decodeURIComponent(req.query.terms);
     client.search({
         index: 'bookindex',
         from: req.query.index > 0 ? req.query.index: 0,
         size: 50,
-        sort: "file.date:desc",
         body: {
             "fields": [
                 "title",
+                "score",
                 "path",
                 "file.author",
                 "file.name",
@@ -65,7 +66,17 @@ router.get('/search', function(req, res, next) {
                 "file.content_length",
                 "file.date",
                 "file.keywords"
-            ]
+            ],
+            "query": {
+                "match": {
+                    "file.content": terms
+                }
+            },
+            "highlight": {
+                "fields": {
+                    "file.content": {}
+                }
+            }
         }
     }, function (error, response) {
         if (error){

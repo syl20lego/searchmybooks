@@ -48,8 +48,23 @@
         };
     }]);
 
+    app.filter('to_trusted', ['$sce', function($sce){
+        return function(text) {
+            return $sce.trustAsHtml(text);
+        };
+    }]);
+
     app.controller('searchController', function($scope, SearchBook) {
         $scope.searchBook = new SearchBook();
+
+        $scope.search = function() {
+            console.log('new search: ' + $scope.terms);
+            $scope.searchBook.terms = $scope.terms;
+            $scope.searchBook.items = [];
+            $scope.searchBook.nextPage();
+            $scope.$emit('list:newSearch')
+        };
+
     });
 
     // SearchBook constructor function to encapsulate HTTP and pagination logic
@@ -57,13 +72,15 @@
         var constructor = function() {
             this.items = [];
             this.busy = false;
+            this.terms = null;
         };
 
         constructor.prototype.nextPage = function() {
+            if (!this.terms) return;
             if (this.busy) return;
             this.busy = true;
             console.log('Paging');
-            var url = "/books/search?index=" + this.items.length;
+            var url = "/books/search?index=" + this.items.length + "&terms=" + encodeURIComponent(this.terms);
             $http.get(url).success(function(data) {
                 var items = data.hits.hits;
                 for (var i = 0; i < items.length; i++) {
