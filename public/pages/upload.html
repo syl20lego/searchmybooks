@@ -5,14 +5,9 @@
         <h3>Select files</h3>
 
         <div ng-show="uploader.isHTML5">
-            <!-- 3. nv-file-over uploader="link" over-class="className" -->
-            <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
-                Base drop zone
-            </div>
-
             <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
-            <div nv-file-drop="" uploader="uploader" options="{ url: '/books/upload' }">
-                <div nv-file-over="" uploader="uploader" over-class="another-file-over-class" class="well my-drop-zone">
+            <div nv-file-drop="" uploader="uploader">
+                <div nv-file-over="" uploader="uploader" over-class="file-over-class" class="well my-drop-zone">
                     Another drop zone with its own settings
                 </div>
             </div>

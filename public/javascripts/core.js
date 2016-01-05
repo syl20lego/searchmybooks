@@ -130,6 +130,8 @@
         uploader.filters.push({
             name: 'disabledElement',
             fn: function(item /*{File|FileLikeObject}*/, options) {
+                if (options === undefined)
+                    return true;
                 return !options.disabled;
             }
         });
