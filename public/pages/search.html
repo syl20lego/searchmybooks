@@ -15,6 +15,8 @@
         <span class='title'>
         <a ng-href='/download/{{item.fields["file.name"][0]}}' target='_blank'>{{item.fields.title[0]}}</a>
         </span>
+        <img src='/download/{{item.fields.coverPage[0]}}'>
+
         <div ng-repeat="content in item.highlight['file.content']">
             <q ng-bind-html="content | to_trusted"></q>
         </div>

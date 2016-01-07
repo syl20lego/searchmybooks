@@ -3,15 +3,19 @@ var multer = require('multer');
 var router = express.Router();
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
+var settings = require('../settings');
+var PDFImage = require("pdf-image").PDFImage;
+
 var client = new elasticsearch.Client({
     host: 'localhost:9200'
     //log: ['error', 'trace']
 });
 
 var storage = multer.diskStorage({
-    destination: __dirname + '/../local/storage/books/',
+    destination: settings.BOOKS_DIR,
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)
+        //cb(null, Date.now() + '-' + file.originalname)
+        cb(null, file.originalname)
     }
 });
 
@@ -28,6 +32,7 @@ router.get('/', function(req, res, next) {
             "fields": [
             "title",
             "path",
+            "coverPage",
             "file.author",
             "file.name",
             "file.content_type",
@@ -60,6 +65,7 @@ router.get('/search', function(req, res, next) {
                 "title",
                 "score",
                 "path",
+                "coverPage",
                 "file.author",
                 "file.name",
                 "file.content_type",
@@ -99,28 +105,63 @@ router.post('/upload', upload.any(),function (req, res, next) {
     var encoded = base64_encode(current.path);
     console.log(encoded.length);
 
-    client.index({
-        index: 'bookindex',
-        id: current.originalname,
-        type: 'book',
-        body: {
-            title: current.originalname,
-            path: current.path,
-            file :  {
-                _name: current.filename,
-                _content_length: current.size,
-                _content: encoded
+    console.log('Creating cover page ' + current.path);
+    var pdfImage = new PDFImage(current.path);
+    pdfImage.setConvertOptions({"-geometry " : "x240"});
+    pdfImage.convertPage(0).then(function (imagePath) {
+        // 0-th page (first page) of the slide.pdf is available as slide-0.png
+        console.log('Cover image created ' + imagePath);
+        client.index({
+            index: 'bookindex',
+            id: current.originalname,
+            type: 'book',
+            body: {
+                title: current.originalname,
+                path: current.path,
+                coverPage : imagePath.replace(settings.BOOKS_DIR, ''),
+                file :  {
+                    _name: current.filename,
+                    _content_length: current.size,
+                    _content: encoded
+                }
             }
-        }
-    }, function (error, response) {
-        if (error){
-            console.log(error);
-            res.status(500).send(error);
-        }else if (response){
-            console.log(response);
-            res.status(200).send(response);
-        }
+        }, function (error, response) {
+            if (error){
+                console.log(error);
+                res.status(500).send(error);
+            }else if (response){
+                console.log(response);
+                res.status(200).send(response);
+            }
+        });
+
+    }, function(error){
+        console.log('Oups Cover image problem ' +  JSON.stringify(error));
+        client.index({
+            index: 'bookindex',
+            id: current.originalname,
+            type: 'book',
+            body: {
+                title: current.originalname,
+                path: current.path,
+                file :  {
+                    _name: current.filename,
+                    _content_length: current.size,
+                    _content: encoded
+                }
+            }
+        }, function (error, response) {
+            if (error){
+                console.log(error);
+                res.status(500).send(error);
+            }else if (response){
+                console.log(response);
+                res.status(200).send(response);
+            }
+        });
     });
+
+
 });
 
 

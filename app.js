@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var books = require('./routes/books');
 var admin = require('./routes/admin');
-
+var settings = require('./settings');
 var app = express();
 
 
@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/download", express.static(path.join(__dirname, "local/storage/books")));
+app.use("/download", express.static(settings.BOOKS_DIR));
 
 app.use('/', routes);
 app.use('/books', books);

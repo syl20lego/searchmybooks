@@ -23,6 +23,9 @@ elasticsearch.yml
 # 
 http.max_content_length: 200mb
 ```
+# pdf-image
+Convert PDF to cover image
+https://github.com/mooz/node-pdf-image    
     
 # Installation
 npm install
