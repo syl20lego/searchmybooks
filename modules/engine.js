@@ -1,13 +1,9 @@
 var elasticsearch = require('elasticsearch');
 var fs = require('fs');
 
-// Private
-var client = new elasticsearch.Client({
-    host: 'localhost:9200'
-    //log: ['error', 'trace']
-});
-
-// Public
+/*
+ Public section
+*/
 module.exports = {
     admin :{
         stats: function(){
@@ -19,46 +15,9 @@ module.exports = {
             });
         },
         create: function(){
-            var options = {
-                book: {
-                    properties: {
-                        file: {
-                            "type": "attachment",
-                            "fields": {
-                                "content": {
-                                    "store": true,
-                                    "term_vector": "with_positions_offsets"
-                                },
-                                "name": {
-                                    "store": true
-                                },
-                                "date": {
-                                    "type": "date",
-                                    "store": true
-                                },
-                                "author": {
-                                    "store": true
-                                },
-                                "keywords": {
-                                    "store": true
-                                },
-                                "content_length": {
-                                    "type": "integer",
-                                    "store": true
-                                },
-                                "content_type": {
-                                    "store": true
-                                },
-                                "title": {
-                                    "store": true
-                                }
-                            }
-                        }
-                    }
-                }
-            };
+
             return client.indices.create({index: "bookindex"}).then(function(){
-                return client.indices.putMapping({index: "bookindex", type: "book", body: options})
+                return client.indices.putMapping({index: "bookindex", type: "book", body: fileMappingProperties})
             });
         },
         delete: function(path){
@@ -81,7 +40,6 @@ module.exports = {
     index : {
         add : function(id, title, path, filename, size, coverImage){
             var content = base64_encode(path);
-            console.log('TEST' + coverImage);
             return client.index({
                 index: 'bookindex',
                 id: id,
@@ -107,17 +65,7 @@ module.exports = {
                 size: size,
                 sort: "file.date:desc",
                 body: {
-                    "fields": [
-                        "title",
-                        "path",
-                        "coverPage",
-                        "file.author",
-                        "file.name",
-                        "file.content_type",
-                        "file.content_length",
-                        "file.date",
-                        "file.keywords"
-                    ]
+                    fields: fieldsFilters
                 }
             });
         },
@@ -127,25 +75,14 @@ module.exports = {
                 from: index,
                 size: size,
                 body: {
-                    "fields": [
-                        "title",
-                        "score",
-                        "path",
-                        "coverPage",
-                        "file.author",
-                        "file.name",
-                        "file.content_type",
-                        "file.content_length",
-                        "file.date",
-                        "file.keywords"
-                    ],
-                    "query": {
-                        "match": {
+                    fields: fieldsFilters,
+                    query: {
+                        match: {
                             "file.content": terms
                         }
                     },
-                    "highlight": {
-                        "fields": {
+                    highlight: {
+                        fields: {
                             "file.content": {}
                         }
                     }
@@ -155,6 +92,9 @@ module.exports = {
     }
 };
 
+/*
+ Private Section
+ */
 
 // function to encode file data to base64 encoded string
 function base64_encode(file) {
@@ -163,3 +103,60 @@ function base64_encode(file) {
     // convert binary data to base64 encoded string
     return new Buffer(bitmap).toString('base64');
 }
+
+var client = new elasticsearch.Client({
+    host: 'localhost:9200'
+    //log: ['error', 'trace']
+});
+
+var fieldsFilters =  [
+    "score",
+    "title",
+    "path",
+    "coverPage",
+    "file.author",
+    "file.name",
+    "file.content_type",
+    "file.content_length",
+    "file.date",
+    "file.keywords"
+];
+
+var fileMappingProperties = {
+    book: {
+        properties: {
+            file: {
+                "type": "attachment",
+                "fields": {
+                    "content": {
+                        "store": true,
+                        "term_vector": "with_positions_offsets"
+                    },
+                    "name": {
+                        "store": true
+                    },
+                    "date": {
+                        "type": "date",
+                        "store": true
+                    },
+                    "author": {
+                        "store": true
+                    },
+                    "keywords": {
+                        "store": true
+                    },
+                    "content_length": {
+                        "type": "integer",
+                        "store": true
+                    },
+                    "content_type": {
+                        "store": true
+                    },
+                    "title": {
+                        "store": true
+                    }
+                }
+            }
+        }
+    }
+};

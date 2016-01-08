@@ -48,7 +48,6 @@ router.post('/upload', upload.any(),function (req, res, next) {
 
     cover.create(current.path).then(function (imagePath) {
         var imageName = imagePath.replace(settings.BOOKS_DIR, '');
-        // 0-th page (first page) of the slide.pdf is available as slide-0.png
         console.log('Cover image created ' + imageName);
         engine.index.add(current.originalname, current.originalname, current.path, current.filename, current.size, imageName).then(function(response){
             console.log(response);
