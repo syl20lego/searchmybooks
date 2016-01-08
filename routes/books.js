@@ -39,6 +39,17 @@ router.get('/search', function(req, res, next) {
     });
 });
 
+router.get('/complete', function(req, res, next) {
+    var input = decodeURIComponent(req.query.q);
+    engine.books.suggestion(input).then(function(response){
+        console.log(response);
+        res.status(200).send(response);
+    }).catch(function(error){
+        console.log(error);
+        res.status(500).send(error);
+
+    });
+});
 
 router.post('/upload', upload.any(),function (req, res, next) {
     // req.file is the `avatar` file

@@ -47,7 +47,12 @@ module.exports = {
                 body: {
                     title: title,
                     path: path,
-                    coverPage : coverImage,
+                    coverPage : coverImage|{},
+                    suggest: {
+                        input: title.split(" "),
+                        output: title,
+                        payload: path|{}
+                    },
                     file :  {
                         _name: filename,
                         _content_length: size,
@@ -91,6 +96,20 @@ module.exports = {
                     }
                 }
             });
+        },
+        suggestion: function(input){
+            return client.suggest({
+                    index: 'bookindex',
+                    body: {
+                        suggest: {
+                            text: input,
+                            completion: {
+                                field: "suggest",
+                                fuzzy: true
+                            }
+                        }
+                    }
+                });
         }
     }
 };
@@ -128,6 +147,15 @@ var fieldsFilters =  [
 var fileMappingProperties = {
     book: {
         properties: {
+            title: { type: "string" },
+            path: { type: "string" },
+            coverPage: { type: "string" },
+            suggest: {
+                type: "completion",
+                analyzer: "simple",
+                search_analyzer: "simple",
+                payloads: true
+            },
             file: {
                 "type": "attachment",
                 "fields": {
