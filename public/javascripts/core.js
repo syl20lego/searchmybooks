@@ -182,7 +182,7 @@
                 console.log('data: ' + JSON.stringify(data));
             })
             .error(function (data) {
-                console.log('Error: ' + data);
+                console.log('Error: ' + data.response);
             });
 
         $scope.deleteAll = function() {
@@ -193,7 +193,7 @@
                         console.log('Deleted : ' + JSON.stringify(data));
                     })
                     .error(function (data) {
-                        console.log('Error: ' + data);
+                        console.log('Error: ' + data.response);
                     });
             }
         };
@@ -204,7 +204,7 @@
                     console.log('Created : ' + JSON.stringify(data));
                 })
                 .error(function (data) {
-                    console.log('Error: ' + data);
+                    console.log('Error: ' + data.response);
                 });
         };
     });
