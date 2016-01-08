@@ -82,8 +82,11 @@ module.exports = {
                         }
                     },
                     highlight: {
+                        order : 'score',
+                        pre_tags : ['<b>'],
+                        post_tags : ['</b>'],
                         fields: {
-                            "file.content": {}
+                            "file.content": {"fragment_size" : 500, "number_of_fragments": 2}
                         }
                     }
                 }
