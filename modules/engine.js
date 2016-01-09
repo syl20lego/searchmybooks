@@ -1,3 +1,4 @@
+'use strict';
 var elasticsearch = require('elasticsearch');
 var fs = require('fs');
 
@@ -47,11 +48,11 @@ module.exports = {
                 body: {
                     title: title,
                     path: path,
-                    coverPage : coverImage|{},
+                    coverPage : coverImage?coverImage:{},
                     suggest: {
                         input: title.split(" "),
                         output: title,
-                        payload: path|{}
+                        payload: filename?filename:{}
                     },
                     file :  {
                         _name: filename,
