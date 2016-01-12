@@ -21,9 +21,6 @@ router.get('/', function(req, res, next) {
     engine.books.searchDefault(0, 10).then(function(response){
         console.log(response);
         res.status(200).send(response);
-    }).catch(function(error){
-        console.log(error);
-        res.status(500).send(error);
     });
 });
 
@@ -33,22 +30,14 @@ router.get('/search', function(req, res, next) {
     engine.books.seacrhTerms(terms, req.query.index > 0 ? req.query.index: 0, 50).then(function(response){
         console.log(response);
         res.status(200).send(response);
-    }).catch(function(error){
-        console.log(error);
-        res.status(500).send(error);
-
     });
 });
 
-router.get('/complete', function(req, res, next) {
+router.get('/suggest', function(req, res, next) {
     var input = decodeURIComponent(req.query.q);
     engine.books.suggestion(input).then(function(response){
         console.log(response);
         res.status(200).send(response);
-    }).catch(function(error){
-        console.log(error);
-        res.status(500).send(error);
-
     });
 });
 
@@ -65,20 +54,12 @@ router.post('/upload', upload.any(),function (req, res, next) {
             console.log(response);
             res.status(200).send(response);
 
-        }).catch(function(error){
-            console.log(error);
-            res.status(500).send(error);
-
         });
     }).catch(function(error){
         console.log('Oups Cover image problem ' +  JSON.stringify(error));
         engine.index.add(current.originalname, current.originalname, current.path, current.filename, current.size).then(function(response){
             console.log(response);
             res.status(200).send(response);
-
-        }).catch(function(error){
-            console.log(error);
-            res.status(500).send(error);
 
         });
     });

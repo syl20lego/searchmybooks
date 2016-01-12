@@ -1,5 +1,5 @@
 (function(){
-    var app = angular.module('books',  ['ngRoute', 'angularFileUpload', 'infinite-scroll']);
+    var app = angular.module('books',  ['ngRoute', 'angularFileUpload', 'infinite-scroll', 'ui.bootstrap']);
 
     // Application configuration:
 
@@ -54,7 +54,7 @@
         };
     }]);
 
-    app.controller('searchController', function($scope, SearchBook) {
+    app.controller('searchController', function($scope, $http, SearchBook) {
         $scope.searchBook = new SearchBook();
 
         $scope.search = function() {
@@ -63,6 +63,13 @@
             $scope.searchBook.items = [];
             $scope.searchBook.nextPage();
             $scope.$emit('list:newSearch')
+        };
+
+        $scope.suggest = function(input) {
+            return $http.get('/books/suggest?q=' + input).then(function(response){
+                console.log('suggest: ' + JSON.stringify(response.data.suggest[0]));
+                return response.data.suggest[0].options;
+            });
         };
 
     });
@@ -96,15 +103,10 @@
 
     app.controller('defaultController', function($scope, $http) {
 
-        $http.get('/books/')
-            .success(function (data) {
-                $scope.items = data.hits.hits;
-                console.log('reloaded : ' + data.hits.total);
-                console.log(JSON.stringify(data.hits.hits));
-            })
-            .error(function (data) {
-                console.log('Error: ' + data);
-            });
+        $http.get('/books/').then(function(response){
+            $scope.items = response.data.hits.hits;
+            console.log('reloaded : ' + JSON.stringify(response.data.hits.hits));
+        });
     });
 
     app.controller('uploadController', ['$scope', 'FileUploader', function($scope, FileUploader) {
@@ -175,37 +177,32 @@
     }]);
 
     app.controller('adminController', function($scope, $window, $http){
-        //when landing on the page, get information
-        $http.get('/admin/')
-            .success(function (data) {
-                $scope.cluster = data;
-                console.log('data: ' + JSON.stringify(data));
-            })
-            .error(function (data) {
-                console.log('Error: ' + data.response);
+
+        var refresh = function(){
+            //when landing on the page, get information
+            $http.get('/admin/').then(function(response){
+                console.log('data: ' + JSON.stringify(response.data));
+                $scope.cluster = response.data;
             });
+        };
+
+        refresh();
 
         $scope.deleteAll = function() {
             var answer = $window.confirm('Are you sure this will destroy everything!');
             if (answer){
-                $http.get('/admin/delete')
-                    .success(function (data) {
-                        console.log('Deleted : ' + JSON.stringify(data));
-                    })
-                    .error(function (data) {
-                        console.log('Error: ' + data.response);
-                    });
+                $http.get('/admin/delete').then(function(response){
+                    console.log('Deleted : ' + JSON.stringify(response));
+                    $scope.cluster = {};
+                });
             }
         };
 
         $scope.createIndexMapping = function() {
-            $http.get('/admin/create')
-                .success(function (data) {
-                    console.log('Created : ' + JSON.stringify(data));
-                })
-                .error(function (data) {
-                    console.log('Error: ' + data.response);
-                });
+            $http.get('/admin/create').then(function(response){
+                console.log('Created : ' + JSON.stringify(response));
+                refresh();
+            });
         };
     });
 })();

@@ -2,14 +2,24 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." ng-model="terms">
+            <!--<input type="text" class="form-control" placeholder="Search for..." ng-model="terms">-->
+
+            <input type="text" ng-model="terms" placeholder="Search for..."
+                   uib-typeahead="option.payload as option.text for option in suggest($viewValue)"
+                   typeahead-loading="loadingBooks"
+
+                   typeahead-no-results="noResults"  class="form-control">
+
+            <i ng-show="loadingBooks" class="glyphicon glyphicon-refresh"></i>
+
       <span class="input-group-btn">
         <button class="btn btn-default" type="button" ng-click="search()">Search</button>
       </span>
         </div>
     </div>
 </div>
-<div infinite-scroll='searchBook.nextPage()' infinite-scroll-disabled='searchBook.busy' infinite-scroll-distance='5' infinite-scroll-listen-for-event="list:newSearch">
+<div infinite-scroll='searchBook.nextPage()' infinite-scroll-disabled='searchBook.busy' infinite-scroll-distance='5'
+     infinite-scroll-listen-for-event="list:newSearch">
     <div ng-repeat='item in searchBook.items track by $index'>
         <!--Item number {{$index}}: {{item.fields.title}}-->
         <span class='title'>

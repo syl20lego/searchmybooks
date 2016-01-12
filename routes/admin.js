@@ -37,9 +37,6 @@ router.get('/create', function (req, res, next) {
     engine.admin.create().then(function(response){
         console.log(response);
         res.status(200).send(response);
-    }).catch(function(error){
-        console.log(error);
-        res.status(500).send(error);
     });
 });
 
@@ -47,10 +44,6 @@ router.get('/delete', function (req, res, next) {
     engine.admin.delete(settings.BOOKS_DIR).then(function(response){
         console.log(response);
         res.status(200).send(response);
-    }).catch(function(error){
-        console.log(error);
-        res.status(500).send(error);
-
     });
 });
 
