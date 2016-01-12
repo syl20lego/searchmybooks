@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use("/download", express.static(settings.BOOKS_DIR));
+app.use("/dist", express.static(settings.MODULES_DIR));
 
 app.use('/', routes);
 app.use('/books', books);

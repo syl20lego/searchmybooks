@@ -86,15 +86,18 @@
             if (!this.terms) return;
             if (this.busy) return;
             this.busy = true;
+
             console.log('Paging');
             var url = "/books/search?index=" + this.items.length + "&terms=" + encodeURIComponent(this.terms);
             $http.get(url).success(function(data) {
-                var items = data.hits.hits;
-                for (var i = 0; i < items.length; i++) {
-                    console.log(JSON.stringify(items[i]));
-                    this.items.push(items[i]);
+                if (this.items.length < data.hits.total ) {
+                    var items = data.hits.hits;
+                    for (var i = 0; i < items.length; i++) {
+                        console.log(JSON.stringify(items[i]));
+                        this.items.push(items[i]);
+                    }
+                    this.busy = false;
                 }
-                this.busy = false;
             }.bind(this));
         };
 
