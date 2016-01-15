@@ -128,7 +128,7 @@ function base64_encode(file) {
 }
 
 var client = new elasticsearch.Client({
-    host: 'localhost:9200'
+    host: '192.168.0.201:9200'
     //log: ['error', 'trace']
 });
 
