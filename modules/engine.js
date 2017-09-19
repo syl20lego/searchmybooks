@@ -99,7 +99,7 @@ module.exports = {
                         pre_tags : ['<b>'],
                         post_tags : ['</b>'],
                         fields: {
-                            "attachment.content": {"fragment_size" : 500, "number_of_fragments": 2}
+                            "attachment.content": {"fragment_size" : 200, "number_of_fragments": 5}
                         }
                     }
                 }

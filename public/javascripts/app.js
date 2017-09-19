@@ -61,6 +61,7 @@
             console.log('new search: ' + $scope.terms);
             $scope.searchBook.terms = $scope.terms;
             $scope.searchBook.items = [];
+            $scope.searchBook.busy = false;
             $scope.searchBook.nextPage();
             $scope.$emit('list:newSearch')
         };
