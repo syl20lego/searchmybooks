@@ -5,7 +5,7 @@
             <!--<input type="text" class="form-control" placeholder="Search for..." ng-model="terms">-->
 
             <input type="text" ng-model="terms" placeholder="Search for..."
-                   uib-typeahead="option.payload as option.text for option in suggest($viewValue)"
+                   uib-typeahead="option.text as option.text for option in suggest($viewValue)"
                    typeahead-loading="loadingBooks"
 
                    typeahead-no-results="noResults"  class="form-control">
@@ -23,14 +23,13 @@
     <div ng-repeat='item in searchBook.items track by $index'>
         <!--Item number {{$index}}: {{item.fields.title}}-->
         <span class='title'>
-        <a ng-href='/download/{{item.fields["file.name"][0]}}' target='_blank'>{{item.fields.title[0]}}</a>
+        <a ng-href='/download/{{item._source.name}}' target='_blank'>{{item._source.attachment.title}}</a>
         </span>
-        <img src='/download/{{item.fields.coverPage[0]}}'>
+        <img src='/download/{{item._source.coverPage}}'>
 
-        <div ng-repeat="content in item.highlight['file.content']">
+        <div ng-repeat="content in item.highlight['attachment.content']">
             <q ng-bind-html="content | to_trusted"></q>
         </div>
-        <!--{{item.highlight["file.content"]}}-->
         <div style='clear: both;'></div>
     </div>
     <div ng-show='searchBook.busy' ng-hide='!searchBook.terms'>Loading data...</div>

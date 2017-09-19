@@ -8,11 +8,11 @@ Store and search books library
 ## Install Elasticsearch
 [https://www.elastic.co/downloads/elasticsearch](https://www.elastic.co/downloads/elasticsearch)
 
-## Install mapper-attachments pluggin for elasticsearch
-[https://github.com/elastic/elasticsearch-mapper-attachments](https://github.com/elastic/elasticsearch-mapper-attachments)
+## Install ingest-attachment pluggin for elasticsearch
 
-"The mapper attachments plugin lets Elasticsearch index file attachments in over a thousand formats (such as PPT, XLS, PDF) using the Apache text extraction library Tika.
-In practice, the plugin adds the attachment type when mapping properties so that documents can be populated with file attachment contents (encoded as base64).
+```
+elasticsearch-plugin install ingest-attachment
+```
 
 ## Configuration
 Books are converted in base64 and requires bigger http content

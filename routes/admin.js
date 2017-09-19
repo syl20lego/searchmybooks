@@ -34,9 +34,9 @@ router.get('/mapping', function (req, res, next) {
 });
 
 router.get('/create', function (req, res, next) {
-    engine.admin.create().then(function(response){
-        console.log(response);
-        res.status(200).send(response);
+    engine.admin.create().then(function(responses){
+        console.log(responses);
+        res.status(200).send(responses);
     });
 });
 

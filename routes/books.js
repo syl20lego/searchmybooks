@@ -36,6 +36,12 @@ router.get('/search', function(req, res, next) {
 router.get('/suggest', function(req, res, next) {
     var input = decodeURIComponent(req.query.q);
     engine.books.suggestion(input).then(function(response){
+        response.suggest.forEach(function(suggest){
+            suggest.options.forEach(function(option){
+                // clear massive payload, todo find a way to filter in ES
+                option._source = {};
+            })
+        });
         console.log(response);
         res.status(200).send(response);
     });
