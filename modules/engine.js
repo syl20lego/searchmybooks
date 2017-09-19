@@ -1,6 +1,7 @@
 'use strict';
 var elasticsearch = require('elasticsearch');
 var fs = require('fs');
+var settings = require('../settings')
 
 /*
  Public section
@@ -128,8 +129,8 @@ function base64_encode(file) {
 }
 
 var client = new elasticsearch.Client({
-    host: '192.168.0.201:9200'
-    //log: ['error', 'trace']
+    host: settings.ELASTICSEARCH_URL,
+    log: ['error', 'trace']
 });
 
 var fieldsFilters =  [
