@@ -68,8 +68,8 @@
 
         $scope.suggest = function(input) {
             return $http.get('/books/suggest?q=' + input).then(function(response){
-                console.log('suggest: ' + JSON.stringify(response.data.suggest[0]));
-                return response.data.suggest[0].options;
+                console.log('suggest: ' + JSON.stringify(response.data.suggest.suggestQuery[0]));
+                return response.data.suggest.suggestQuery[0].options;
             });
         };
 

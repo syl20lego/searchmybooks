@@ -44,8 +44,8 @@ module.exports = {
                     }
                 });
             });
-            return client.ingest.deletePipeline({id: 'attachment'}).then(function(){
-                return client.indices.delete({index: 'bookindex'}).then(function (response) {
+            return client.indices.delete({index: 'bookindex'}).then(function (response) {
+                return client.ingest.deletePipeline({id: 'attachment'}).then(function(){
                     return response;
                 });
             });
@@ -63,7 +63,7 @@ module.exports = {
                     path: path,
                     coverPage : coverImage?coverImage:{},
                     suggest: {
-                        input: title.split(" ")
+                        input: title.toLowerCase().split(/[&+% ,._-]+/).filter(Boolean)
                     },
                     data: content,
                     name: filename
@@ -106,18 +106,22 @@ module.exports = {
             });
         },
         suggestion: function(input){
-            return client.suggest({
-                    index: 'bookindex',
-                    body: {
-                        suggest: {
+            return client.search({
+                index: 'bookindex',
+                from: 0,
+                size: 5,
+                _source: fieldsFilters,
+                body: {
+                    suggest : {
+                        suggestQuery: {
                             text: input,
-                            completion: {
-                                field: "suggest",
-                                fuzzy: true
+                            "completion" :{
+                                "field": "suggest"
                             }
                         }
                     }
-                });
+                }
+            });
         }
     }
 };
@@ -159,9 +163,11 @@ var fileMappingProperties = {
             path: {type: "string"},
             coverPage: {type: "string"},
             suggest: {
-                type: "completion",
-                analyzer: "simple",
-                search_analyzer: "simple"
+                // https://www.elastic.co/guide/en/elasticsearch/reference/master/search-suggesters-completion.html
+                type: "completion"
+                // analyzer: "simple",
+                // search_analyzer: "analyzer",
+                // max_input_length: 20
             }
         }
     }
