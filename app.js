@@ -1,5 +1,5 @@
 'use strict';
-var express = require('express');
+let express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -19,14 +19,20 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use("/download", express.static(settings.BOOKS_DIR));
-app.use("/dist", express.static(settings.MODULES_DIR));
+// app.use("/dist", express.static(settings.MODULES_DIR));
 
 app.use('/', routes);
 app.use('/books', books);
 app.use('/admin', admin);
 
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 // error handlers
 
