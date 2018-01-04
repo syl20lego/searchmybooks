@@ -1,0 +1,41 @@
+{
+  "test": {
+    "production": false,
+    "elasticsearch": {
+      "host": "http://test",
+      "log": [
+        "error"
+      ]
+    }
+  },
+  "local": {
+    "production": false,
+    "elasticsearch": {
+      "host": "http://localhost:9200",
+      "log": [
+        "error",
+        "trace"
+      ]
+    }
+  },
+  "qa": {
+    "production": false,
+    "elasticsearch": {
+      "host": "http://localhost:9200",
+      "log": [
+        "error",
+        "trace"
+      ]
+    }
+  },
+  "production": {
+    "production": true,
+    "elasticsearch": {
+      "host": "http://localhost:9200",
+      "log": [
+        "error",
+        "warning"
+      ]
+    }
+  }
+}

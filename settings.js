@@ -1,10 +1,11 @@
-var path = require('path');
+const path = require('path');
 
-var settings = {
+const settings = {
     PROJECT_DIR : __dirname,
-    BOOKS_DIR :  path.join(__dirname, 'local/storage/books/'),
-    MODULES_DIR :  path.join(__dirname, 'node_modules/'),
-    ELASTICSEARCH_URL: 'localhost:9200'
+    BOOKS_DIR :  path.join(__dirname, '/local/storage/books/'),
+    MODULES_DIR :  path.join(__dirname, '/node_modules/'),
+    PUBLIC_DIR :  path.join(__dirname, '/public'),
+    DEFAULT_PORT: 3000
 };
 
 module.exports = settings;
